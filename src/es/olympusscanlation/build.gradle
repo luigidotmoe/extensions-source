@@ -2,6 +2,7 @@ ext {
     extName = 'Olympus Scanlation'
     extClass = '.OlympusScanlation'
     extVersionCode = 17
+    isNsfw = false
 }
 
 apply from: "$rootDir/common.gradle"
