@@ -83,14 +83,21 @@ class DescriptionDto(
 )
 
 @Serializable
-class Post<T>(val post: T)
+class Post<T>(
+    val post: T,
+    val initialChap: List<Chapter>? = null,
+)
 
 @Serializable
 class ChapterListResponse(
     val isNovel: Boolean = false,
     val slug: String? = null,
-    val chapters: List<Chapter>,
-)
+    private val chapters: List<Chapter>? = null,
+    private val initialChap: List<Chapter>? = null,
+) {
+    val allChapters: List<Chapter>
+        get() = (chapters ?: initialChap).orEmpty()
+}
 
 @Serializable
 class Chapter(
@@ -99,8 +106,8 @@ class Chapter(
     private val number: JsonPrimitive,
     private val title: String? = null,
     private val createdAt: String,
-    private val chapterStatus: String,
-    private val isAccessible: Boolean,
+    private val chapterStatus: String = "PUBLIC",
+    private val isAccessible: Boolean = true,
     private val isLocked: Boolean? = false,
     private val isTimeLocked: Boolean? = false,
     private val mangaPost: MangaPostDto? = null,
@@ -142,6 +149,11 @@ class Images(
 class ViewQuery(
     val postId: Int?,
     val chapterId: Int?,
+)
+
+@Serializable
+class AstroChapter<T>(
+    val chapter: T,
 )
 
 private val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH)

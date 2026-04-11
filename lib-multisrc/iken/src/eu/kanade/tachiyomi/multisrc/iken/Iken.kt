@@ -30,6 +30,8 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import rx.Observable
 import java.util.concurrent.ConcurrentHashMap
 
@@ -328,7 +330,9 @@ abstract class Iken(
 
     override fun mangaDetailsParse(response: Response): SManga {
         val body = response.body.string()
-        val manga = body.extractNextJsRsc<Manga>()!!
+        val manga = runCatching { body.extractNextJsRsc<Manga>()!! }.getOrNull()
+            ?: body.extractAstro<Post<Manga>>()?.post
+            ?: throw Exception("Manga details parse error")
 
         return manga.toSManga().apply {
             if (manga.postContent?.startsWith('$') == true) {
@@ -355,7 +359,7 @@ abstract class Iken(
 
         val data = runCatching {
             body.extractNextJsRsc<Post<ChapterListResponse>>()
-        }.getOrNull() ?: run {
+        }.getOrNull() ?: body.extractAstro<Post<ChapterListResponse>>() ?: run {
             val userId = userIdRegex.find(body)?.groupValues?.get(1).orEmpty()
             val chapterUrl = "$apiUrl/api/chapters?postId=$id&skip=0&take=900&order=desc&userid=$userId"
 
@@ -366,7 +370,7 @@ abstract class Iken(
 
         assert(!data.post.isNovel) { "Novels are unsupported" }
 
-        return data.post.chapters
+        return (data.post.allChapters + data.initialChap.orEmpty())
             .filter { it.isPublic() && (it.isAccessible() || (preferences.getBoolean(SHOW_LOCKED_CHAPTER_PREF_KEY, false) && it.isLocked())) }
             .map { it.toSChapter(data.post.slug ?: slug) }
     }
@@ -387,7 +391,9 @@ abstract class Iken(
             throw Exception("Unlock chapter in webview")
         }
 
-        val pages = document.extractNextJs<Images>()!!
+        val pages = runCatching { document.extractNextJs<Images>()!! }.getOrNull()
+            ?: document.extractAstro<AstroChapter<Images>>()?.chapter
+            ?: throw Exception("Page list parse error")
 
         launchIO { updateViews(null, pages.id) }
 
@@ -409,6 +415,12 @@ abstract class Iken(
     }
 
     override fun imageUrlParse(response: Response) = throw UnsupportedOperationException()
+
+    private inline fun <reified T> Document.extractAstro(): T? = selectFirst("[data-vastro-props]")
+        ?.attr("data-vastro-props")
+        ?.let { it.parseAs<T>() }
+
+    private inline fun <reified T> String.extractAstro(): T? = Jsoup.parse(this).extractAstro<T>()
 
     // preferences
 
