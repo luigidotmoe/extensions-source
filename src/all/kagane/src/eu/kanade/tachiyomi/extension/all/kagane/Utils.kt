@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.extension.en.kagane
+package eu.kanade.tachiyomi.extension.all.kagane
 
 import android.util.Base64
 import java.security.MessageDigest

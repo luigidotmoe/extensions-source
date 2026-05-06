@@ -1,6 +1,6 @@
-package eu.kanade.tachiyomi.extension.en.kagane.wv
+package eu.kanade.tachiyomi.extension.all.kagane.wv
 
-import eu.kanade.tachiyomi.extension.en.kagane.toBase64
+import eu.kanade.tachiyomi.extension.all.kagane.toBase64
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromByteArray
 import kotlinx.serialization.encodeToByteArray

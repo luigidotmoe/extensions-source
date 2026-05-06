@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.extension.en.kagane
+package eu.kanade.tachiyomi.extension.all.kagane
 
 import android.annotation.SuppressLint
 import android.app.Application
@@ -17,9 +17,9 @@ import androidx.preference.ListPreference
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.PreferenceScreen
 import androidx.preference.SwitchPreferenceCompat
-import eu.kanade.tachiyomi.extension.en.kagane.wv.Cdm
-import eu.kanade.tachiyomi.extension.en.kagane.wv.ProtectionSystemHeaderBox
-import eu.kanade.tachiyomi.extension.en.kagane.wv.parsePssh
+import eu.kanade.tachiyomi.extension.all.kagane.wv.Cdm
+import eu.kanade.tachiyomi.extension.all.kagane.wv.ProtectionSystemHeaderBox
+import eu.kanade.tachiyomi.extension.all.kagane.wv.parsePssh
 import eu.kanade.tachiyomi.network.GET
 import eu.kanade.tachiyomi.network.POST
 import eu.kanade.tachiyomi.source.ConfigurableSource
@@ -57,8 +57,10 @@ import java.nio.charset.StandardCharsets
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-class Kagane :
-    HttpSource(),
+abstract class Kagane(
+    final override val lang: String,
+    private val kaganeLangs: List<String> = listOf(lang),
+) : HttpSource(),
     ConfigurableSource {
 
     override val name = "Kagane"
@@ -66,8 +68,6 @@ class Kagane :
     private val domain = "kagane.org"
     private val apiUrl = "https://yuzuki.$domain"
     override val baseUrl = "https://$domain"
-
-    override val lang = "en"
 
     override val supportsLatest = true
 
@@ -179,7 +179,7 @@ class Kagane :
                         tagsMatchAll = if (filter.state) true else null
                     }
 
-                    else -> { }
+                    else -> {}
                 }
             }
 
@@ -246,6 +246,9 @@ class Kagane :
 
                     else -> {}
                 }
+            }
+            putJsonArray("content_lang") {
+                kaganeLangs.forEach { add(it) }
             }
         }
             .toJsonString()

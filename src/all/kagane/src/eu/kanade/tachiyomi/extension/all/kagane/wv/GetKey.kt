@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.extension.en.kagane.wv
+package eu.kanade.tachiyomi.extension.all.kagane.wv
 
 import android.util.Base64
 import java.math.BigInteger

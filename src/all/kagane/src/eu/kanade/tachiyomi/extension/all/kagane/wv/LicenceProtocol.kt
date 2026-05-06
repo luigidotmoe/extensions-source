@@ -2,7 +2,7 @@
 
 // Auto-generated with https://github.com/Dogacel/kotlinx-protobuf-gen
 
-package eu.kanade.tachiyomi.extension.en.kagane.wv
+package eu.kanade.tachiyomi.extension.all.kagane.wv
 
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.protobuf.ProtoNumber

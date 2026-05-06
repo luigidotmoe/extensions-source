@@ -1,4 +1,4 @@
-package eu.kanade.tachiyomi.extension.en.kagane
+package eu.kanade.tachiyomi.extension.all.kagane
 
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.model.SManga
