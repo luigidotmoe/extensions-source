@@ -423,11 +423,6 @@ class Readcomiconline :
             entryValues = Array(MIRROR_URLS.size) { it.toString() }
             setDefaultValue("1")
             summary = "%s"
-
-            setOnPreferenceChangeListener { _, newValue ->
-                val selected = newValue as String
-                preferences.edit().putString(MIRROR_PREF, selected).commit()
-            }
         }
 
         val remoteConfigPref = EditTextPreference(screen.context).apply {
