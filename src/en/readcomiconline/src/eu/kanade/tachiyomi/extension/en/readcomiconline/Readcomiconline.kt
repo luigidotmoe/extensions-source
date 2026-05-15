@@ -520,7 +520,7 @@ class Readcomiconline :
         private const val SERVER_PREF = "serverpref"
         private const val MIRROR_PREF_TITLE = "Mirror Preference"
         private const val MIRROR_PREF = "mirrorpref"
-        private const val MIRROR_DEFAULT_VALUE = "https://readcomiconline.li"
+        private const val MIRROR_DEFAULT_VALUE = "https://rcostation.xyz"
         private const val IMAGE_REMOTE_CONFIG_TITLE = "Remote Config"
         private const val IMAGE_REMOTE_CONFIG_SUMMARY = "Remote Config Link"
         private const val IMAGE_REMOTE_CONFIG_PREF = "imageuseremotelinkpref"
