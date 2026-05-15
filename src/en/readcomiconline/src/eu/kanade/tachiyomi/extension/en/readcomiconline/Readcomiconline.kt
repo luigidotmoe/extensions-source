@@ -39,7 +39,12 @@ class Readcomiconline :
     override val name = "ReadComicOnline"
 
     override val baseUrl: String
-        get() = preferences.getString(MIRROR_PREF, MIRROR_DEFAULT_VALUE)!!
+        get() {
+            val index = preferences.getString(MIRROR_PREF, "1")!!
+                .toIntOrNull() ?: 1
+
+            return MIRROR_URLS[index.coerceIn(MIRROR_URLS.indices)]
+        }
 
     override val lang = "en"
 
@@ -411,9 +416,9 @@ class Readcomiconline :
         val mirrorPref = androidx.preference.ListPreference(screen.context).apply {
             key = MIRROR_PREF
             title = MIRROR_PREF_TITLE
-            entries = arrayOf("readcomiconline.li", "rcostation.xyz")
-            entryValues = arrayOf("https://readcomiconline.li", "https://rcostation.xyz")
-            setDefaultValue(MIRROR_DEFAULT_VALUE)
+            entries = MIRROR_NAMES
+            entryValues = Array(MIRROR_URLS.size) { it.toString() }
+            setDefaultValue("1")
             summary = "%s"
 
             setOnPreferenceChangeListener { _, newValue ->
@@ -520,7 +525,8 @@ class Readcomiconline :
         private const val SERVER_PREF = "serverpref"
         private const val MIRROR_PREF_TITLE = "Mirror Preference"
         private const val MIRROR_PREF = "mirrorpref"
-        private const val MIRROR_DEFAULT_VALUE = "https://rcostation.xyz"
+        private val MIRROR_NAMES = arrayOf("readcomiconline.li", "rcostation.xyz")
+        private val MIRROR_URLS = arrayOf("https://readcomiconline.li", "https://rcostation.xyz")
         private const val IMAGE_REMOTE_CONFIG_TITLE = "Remote Config"
         private const val IMAGE_REMOTE_CONFIG_SUMMARY = "Remote Config Link"
         private const val IMAGE_REMOTE_CONFIG_PREF = "imageuseremotelinkpref"
