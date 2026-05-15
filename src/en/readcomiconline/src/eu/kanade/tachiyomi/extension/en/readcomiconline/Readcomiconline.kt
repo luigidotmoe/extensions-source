@@ -38,7 +38,8 @@ class Readcomiconline :
 
     override val name = "ReadComicOnline"
 
-    override val baseUrl = "https://readcomiconline.li"
+    override val baseUrl: String
+        get() = preferences.getString(MIRROR_PREF, MIRROR_DEFAULT_VALUE)!!
 
     override val lang = "en"
 
@@ -407,6 +408,20 @@ class Readcomiconline :
     // Preferences Code
 
     override fun setupPreferenceScreen(screen: androidx.preference.PreferenceScreen) {
+        val mirrorPref = androidx.preference.ListPreference(screen.context).apply {
+            key = MIRROR_PREF
+            title = MIRROR_PREF_TITLE
+            entries = arrayOf("readcomiconline.li", "rcostation.xyz")
+            entryValues = arrayOf("https://readcomiconline.li", "https://rcostation.xyz")
+            setDefaultValue(MIRROR_DEFAULT_VALUE)
+            summary = "%s"
+
+            setOnPreferenceChangeListener { _, newValue ->
+                val selected = newValue as String
+                preferences.edit().putString(MIRROR_PREF, selected).commit()
+            }
+        }
+
         val remoteConfigPref = androidx.preference.EditTextPreference(screen.context).apply {
             key = IMAGE_REMOTE_CONFIG_PREF
             title = IMAGE_REMOTE_CONFIG_TITLE
@@ -457,6 +472,7 @@ class Readcomiconline :
             }
         }
 
+        screen.addPreference(mirrorPref)
         screen.addPreference(remoteConfigPref)
         screen.addPreference(qualityPref)
         screen.addPreference(serverPref)
@@ -502,6 +518,9 @@ class Readcomiconline :
         private const val QUALITY_PREF = "qualitypref"
         private const val SERVER_PREF_TITLE = "Server Preference"
         private const val SERVER_PREF = "serverpref"
+        private const val MIRROR_PREF_TITLE = "Mirror Preference"
+        private const val MIRROR_PREF = "mirrorpref"
+        private const val MIRROR_DEFAULT_VALUE = "https://readcomiconline.li"
         private const val IMAGE_REMOTE_CONFIG_TITLE = "Remote Config"
         private const val IMAGE_REMOTE_CONFIG_SUMMARY = "Remote Config Link"
         private const val IMAGE_REMOTE_CONFIG_PREF = "imageuseremotelinkpref"
